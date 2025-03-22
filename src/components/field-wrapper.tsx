@@ -1,9 +1,4 @@
-'use client';
-
-import {
-  useContentfulInspectorMode,
-  useContentfulLiveUpdates,
-} from '@contentful/live-preview/react';
+import { ContentfulLivePreview } from '@contentful/live-preview';
 import { IFieldWrapperAdapter } from '@thebigrick/catalyst-cms-layer/types';
 import React, { PropsWithChildren } from 'react';
 
@@ -13,13 +8,11 @@ const FieldWrapper: React.FC<PropsWithChildren<IFieldWrapperAdapter>> = ({
   blockId,
   isDraftEnabled,
 }) => {
-  const inspectorProps = useContentfulInspectorMode({ entryId: blockId });
-
   if (!isDraftEnabled) {
-    return children;
+    return <div>children</div>;
   }
 
-  return <div {...inspectorProps({ fieldId })}>{children}</div>;
+  return <div {...ContentfulLivePreview.getProps({ entryId: blockId, fieldId })}>{children}</div>;
 };
 
 export default FieldWrapper;

@@ -22,7 +22,6 @@ const migration: IIdemPotentMigration = async (environment) => {
       type: 'Symbol',
       required: true,
     },
-    ...boxFields,
     {
       id: 'columns',
       name: 'Columns',
@@ -94,6 +93,7 @@ const migration: IIdemPotentMigration = async (environment) => {
         ],
       },
     },
+    ...boxFields,
   ];
 
   const contentTypeWithFields = updateFields(contentType, fields);

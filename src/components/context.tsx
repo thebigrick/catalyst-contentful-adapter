@@ -17,7 +17,7 @@ const Context: React.FC<PropsWithChildren<ICmsContextAdapter>> = ({
 
   return (
     <ContentfulLivePreviewProvider
-      debugMode={true}
+      debugMode={false}
       enableInspectorMode={isDraftEnabled}
       enableLiveUpdates={isDraftEnabled}
       locale={fullLocale}

@@ -21,13 +21,13 @@ const migration: IIdemPotentMigration = async (environment) => {
       type: 'Symbol',
       required: true,
     },
-    ...boxFields,
     {
       id: 'text',
       name: 'Rich Text',
       type: 'RichText',
       localized: true,
     },
+    ...boxFields,
   ];
 
   const contentTypeWithFields = updateFields(contentType, fields);
