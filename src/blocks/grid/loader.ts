@@ -4,7 +4,7 @@ import { Entry, EntrySkeletonType } from 'contentful';
 import convertBlockArray from '../../service/convert-block-array';
 import { IBlockLoader } from '../../types';
 
-const loader: IBlockLoader<IBlockGridData> = async (block, locale, isPreview, blocksLoader) => {
+const loader: IBlockLoader<IBlockGridData> = async (block, context, blocksLoader) => {
   return {
     type: 'Grid',
     id: block.sys.id,
@@ -15,8 +15,7 @@ const loader: IBlockLoader<IBlockGridData> = async (block, locale, isPreview, bl
       gap: block.fields.gap as number,
       blocks: await convertBlockArray(
         block.fields.blocks as Array<Entry<EntrySkeletonType, any>>,
-        locale,
-        isPreview,
+        context,
         blocksLoader,
       ),
     },

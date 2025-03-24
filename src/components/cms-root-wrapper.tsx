@@ -1,32 +1,31 @@
 'use client';
 
 import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
-import { ICmsContextAdapter } from '@thebigrick/catalyst-cms-layer/types';
+import { ICmsRootWrapperAdapter } from '@thebigrick/catalyst-cms-layer/types';
 import React, { PropsWithChildren } from 'react';
 
 import getFullLocale from '../service/get-full-locale';
 
 import MessageManager from './message-manager';
 
-const Context: React.FC<PropsWithChildren<ICmsContextAdapter>> = ({
+const CmsRootWrapper: React.FC<PropsWithChildren<ICmsRootWrapperAdapter>> = ({
   children,
-  locale,
-  isDraftEnabled,
+  context: { isPreview, locale },
 }) => {
   const fullLocale = getFullLocale(locale);
 
   return (
     <ContentfulLivePreviewProvider
       debugMode={false}
-      enableInspectorMode={isDraftEnabled}
-      enableLiveUpdates={isDraftEnabled}
+      enableInspectorMode={isPreview}
+      enableLiveUpdates={isPreview}
       locale={fullLocale}
       targetOrigin="https://app.contentful.com"
     >
-      <MessageManager isDraftEnabled={isDraftEnabled} />
+      <MessageManager isPreview={isPreview} />
       {children}
     </ContentfulLivePreviewProvider>
   );
 };
 
-export default Context;
+export default CmsRootWrapper;

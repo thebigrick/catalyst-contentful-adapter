@@ -7,24 +7,22 @@ import getFullLocale from '../get-full-locale';
 /**
  * Get the page by its ID
  * @param id
- * @param locale
- * @param isPreview
+ * @param context
  */
 const getPageById: IGetPageByIdAdapter = async (
   id: string,
-  locale: string,
-  isPreview: boolean,
+  context,
 ): Promise<IBlock<IPageData> | null> => {
   if (!id) {
     return null;
   }
 
-  const client = getClient(isPreview);
+  const client = getClient(context);
 
   const getEntry = async () => {
     try {
       // @ts-expect-error: Locale is not in the type definition
-      return await client.getEntry(id, { locale: getFullLocale(locale) });
+      return await client.getEntry(id, { locale: getFullLocale(context.locale) });
     } catch {
       return null;
     }
@@ -36,7 +34,7 @@ const getPageById: IGetPageByIdAdapter = async (
     return null;
   }
 
-  return convertBlock<IPageData>(entry, locale, isPreview);
+  return convertBlock<IPageData>(entry, context);
 };
 
 export default getPageById;

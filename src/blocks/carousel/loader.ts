@@ -1,24 +1,23 @@
-import { IPageData } from '@thebigrick/catalyst-cms-layer/types';
+import { IBlockCarouselData } from '@thebigrick/catalyst-cms-layer/types';
 import { Entry, EntrySkeletonType } from 'contentful';
 
 import convertBlockArray from '../../service/convert-block-array';
 import { IBlockLoader } from '../../types';
 
-const loader: IBlockLoader<IPageData> = async (block, context, blockLoader) => {
-  return {
+const loader: IBlockLoader<IBlockCarouselData> = async (block, context, blocksLoader) => {
+  return Promise.resolve({
     id: block.sys.id,
-    type: 'Page',
+    type: 'Carousel',
     data: {
-      id: block.sys.id,
-      title: block.fields.title as string,
-      slug: block.fields.slug as string,
       blocks: await convertBlockArray(
         block.fields.blocks as Array<Entry<EntrySkeletonType, any>>,
         context,
-        blockLoader,
+        blocksLoader,
       ),
+      showButtons: Boolean(block.fields.showButtons),
+      showScrollbar: Boolean(block.fields.showScrollbar),
     },
-  };
+  });
 };
 
 export default loader;

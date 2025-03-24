@@ -1,3 +1,4 @@
+import carousel from '../blocks/carousel';
 import grid from '../blocks/grid';
 import html from '../blocks/html';
 import image from '../blocks/image';
@@ -15,6 +16,7 @@ const blocksRegistry: Record<string, IBlockDefinition> = {
   'catalyst-rich-text': richText,
   'catalyst-image': image,
   'catalyst-grid': grid,
+  'catalyst-carousel': carousel,
 };
 
 export default blocksRegistry;

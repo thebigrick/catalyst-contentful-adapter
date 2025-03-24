@@ -8,6 +8,8 @@ const loader: IBlockLoader<IBlockProductsCarouselData> = (block) => {
     type: 'ProductsCarousel',
     data: {
       productIds: ((block.fields.products || []) as string[]).map(Number),
+      showButtons: Boolean(block.fields.showButtons),
+      showScrollbar: Boolean(block.fields.showScrollbar),
     },
   });
 };

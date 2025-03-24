@@ -1,4 +1,4 @@
-import { IBlock } from '@thebigrick/catalyst-cms-layer/types';
+import { IBlock, ICmsContext } from '@thebigrick/catalyst-cms-layer/types';
 import { Entry, EntrySkeletonType } from 'contentful';
 import DataLoader from 'dataloader';
 
@@ -7,15 +7,12 @@ import getEntriesByIds from './get-entries-by-ids';
 
 const convertBlock = async <TData = Record<string, any>>(
   block: Entry<EntrySkeletonType, any>,
-  locale: string,
-  isPreview: boolean,
+  context: ICmsContext,
   existingBlocksLoader?: DataLoader<any, any>,
 ): Promise<IBlock<TData> | null> => {
   // The data loader is used to batch requests for blocks
   const createBlocksLoader = () => {
-    return new DataLoader(async (keys: readonly string[]) =>
-      getEntriesByIds(keys, locale, isPreview),
-    );
+    return new DataLoader(async (keys: readonly string[]) => getEntriesByIds(keys, context));
   };
 
   const blocksLoader = existingBlocksLoader ?? createBlocksLoader();
@@ -26,14 +23,14 @@ const convertBlock = async <TData = Record<string, any>>(
     const entryId = block.sys.id;
     const linkedBlock = (await blocksLoader.load(entryId)) as Entry<EntrySkeletonType, any>;
 
-    return convertBlock(linkedBlock, locale, isPreview, blocksLoader);
+    return convertBlock(linkedBlock, context, blocksLoader);
   }
 
   const type = block.sys.contentType.sys.id;
 
   const def = getBlockByType(type);
 
-  return await def.loader(block, locale, isPreview, blocksLoader);
+  return await def.loader(block, context, blocksLoader);
 };
 
 export default convertBlock;

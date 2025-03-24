@@ -1,18 +1,30 @@
+import blocksRegistry from '../../service/blocks-registry';
 import boxFields from '../../service/migration/box-fields';
 import {
   getOrCreateContentType,
   updateAndPublishContentType,
   updateFields,
 } from '../../service/migration/migration-utils';
-import { IDesiredField, IIdemPotentMigration } from '../../types';
+import { IBlockDefinition, IDesiredField, IIdemPotentMigration } from '../../types';
 
 const migration: IIdemPotentMigration = async (environment) => {
   const contentType = await getOrCreateContentType(
     environment,
-    'catalyst-products-carousel',
-    'Products Carousel',
-    'Products Carousel in Catalyst',
+    'catalyst-carousel',
+    'Carousel',
+    'Carousel in Catalyst',
   );
+
+  // Avoid circular carousels
+  const availableBlocksRegistry = Object.entries(blocksRegistry).reduce<
+    Record<string, IBlockDefinition>
+  >((acc, [key, value]) => {
+    if (key !== 'catalyst-carousel') {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {});
 
   const fields: IDesiredField[] = [
     {
@@ -22,13 +34,19 @@ const migration: IIdemPotentMigration = async (environment) => {
       required: true,
     },
     {
-      id: 'products',
-      name: 'Product IDs',
+      id: 'blocks',
+      name: 'Blocks',
       type: 'Array',
-      items: {
-        type: 'Symbol',
-      },
       required: true,
+      items: {
+        type: 'Link',
+        linkType: 'Entry',
+        validations: [
+          {
+            linkContentType: Object.keys(availableBlocksRegistry),
+          },
+        ],
+      },
     },
     {
       id: 'showButtons',

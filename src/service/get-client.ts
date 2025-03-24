@@ -1,3 +1,4 @@
+import { ICmsContext } from '@thebigrick/catalyst-cms-layer/types';
 import { ContentfulClientApi, createClient } from 'contentful';
 
 import assertEnv from './assert-env';
@@ -10,19 +11,19 @@ const clients: {
   preview: undefined,
 };
 
-const getClient = (preview = false): ContentfulClientApi<any> => {
+const getClient = (context: ICmsContext): ContentfulClientApi<any> => {
   assertEnv();
 
-  const key = preview ? 'preview' : 'prod';
+  const key = context.isPreview ? 'preview' : 'prod';
 
   if (!clients[key]) {
     clients[key] = createClient({
       space: process.env.CONTENTFUL_SPACE_ID || '',
       accessToken:
-        (preview
+        (context.isPreview
           ? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
           : process.env.CONTENTFUL_ACCESS_TOKEN) || '',
-      host: preview ? 'preview.contentful.com' : 'cdn.contentful.com',
+      host: context.isPreview ? 'preview.contentful.com' : 'cdn.contentful.com',
     });
   }
 

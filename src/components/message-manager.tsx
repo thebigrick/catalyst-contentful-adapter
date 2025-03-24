@@ -1,20 +1,20 @@
 import { ContentfulLivePreview } from '@contentful/live-preview';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 export interface IMessageManagerProps {
-  isDraftEnabled: boolean;
+  isPreview: boolean;
 }
 
-const MessageManager: React.FC<IMessageManagerProps> = ({ isDraftEnabled }) => {
+const MessageManager: React.FC<IMessageManagerProps> = ({ isPreview }) => {
   useEffect(() => {
-    if (isDraftEnabled) {
+    if (isPreview) {
       ContentfulLivePreview.subscribe('save', {
         callback: () => {
           window.location.reload();
         },
       });
     }
-  }, [isDraftEnabled]);
+  }, [isPreview]);
 
   return null;
 };
