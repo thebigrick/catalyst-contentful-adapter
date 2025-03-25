@@ -11,7 +11,7 @@ const clients: {
   preview: undefined,
 };
 
-const getClient = (context: ICmsContext): ContentfulClientApi<any> => {
+const getClient = (context: Pick<ICmsContext, 'isPreview'>): ContentfulClientApi<any> => {
   assertEnv();
 
   const key = context.isPreview ? 'preview' : 'prod';

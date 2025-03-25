@@ -1,6 +1,4 @@
 import blocksRegistry from '../../service/blocks-registry';
-import getLeafBlocksRegistry from '../../service/get-leaf-blocks-registry';
-import boxFields from '../../service/migration/box-fields';
 import {
   getOrCreateContentType,
   updateAndPublishContentType,
@@ -11,9 +9,9 @@ import { IDesiredField, IIdemPotentMigration } from '../../types';
 const migration: IIdemPotentMigration = async (environment) => {
   const contentType = await getOrCreateContentType(
     environment,
-    'catalyst-carousel',
-    'Carousel',
-    'Carousel in Catalyst',
+    'catalyst-category',
+    'Category',
+    'BigCommerce Category in Catalyst',
   );
 
   const fields: IDesiredField[] = [
@@ -22,34 +20,30 @@ const migration: IIdemPotentMigration = async (environment) => {
       name: 'Title',
       type: 'Symbol',
       required: true,
+      localized: true,
     },
     {
-      id: 'blocks',
-      name: 'Blocks',
+      id: 'categoryId',
+      name: 'Category ID',
+      type: 'Symbol',
+      required: true,
+    },
+    {
+      id: 'header',
+      name: 'Header',
       type: 'Array',
+      required: true,
+      localized: false,
       items: {
         type: 'Link',
         linkType: 'Entry',
         validations: [
           {
-            linkContentType: Object.keys(getLeafBlocksRegistry()),
+            linkContentType: Object.keys(blocksRegistry),
           },
         ],
       },
     },
-    {
-      id: 'showButtons',
-      name: 'Show Buttons',
-      type: 'Boolean',
-      required: false,
-    },
-    {
-      id: 'showScrollbar',
-      name: 'Show Scrollbar',
-      type: 'Boolean',
-      required: false,
-    },
-    ...boxFields,
   ];
 
   const contentTypeWithFields = updateFields(contentType, fields);

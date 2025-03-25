@@ -1,4 +1,9 @@
-import { IBlock, IGetPageByIdAdapter, IPageData } from '@thebigrick/catalyst-cms-layer/types';
+import {
+  IBlock,
+  IBlockPageData,
+  ICmsContext,
+  IGetPageByIdAdapter,
+} from '@thebigrick/catalyst-cms-layer/types';
 
 import convertBlock from '../convert-block';
 import getClient from '../get-client';
@@ -9,10 +14,7 @@ import getFullLocale from '../get-full-locale';
  * @param id
  * @param context
  */
-const getPageById: IGetPageByIdAdapter = async (
-  id: string,
-  context,
-): Promise<IBlock<IPageData> | null> => {
+const getPageById: IGetPageByIdAdapter = async (id, context) => {
   if (!id) {
     return null;
   }
@@ -34,7 +36,12 @@ const getPageById: IGetPageByIdAdapter = async (
     return null;
   }
 
-  return convertBlock<IPageData>(entry, context);
+  const fullContext: ICmsContext = {
+    ...context,
+    rootEntityId: id,
+  };
+
+  return convertBlock<IBlockPageData>(entry, fullContext);
 };
 
 export default getPageById;

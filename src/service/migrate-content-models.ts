@@ -7,8 +7,10 @@ const migrateContentModels = async () => {
 
   const environment = await getEnvironment();
 
-  for (const def of Object.values(blocksRegistry)) {
+  for (const [code, def] of Object.entries(blocksRegistry)) {
+    process.stdout.write(`Migrating ${code} `);
     await def.migration(environment);
+    process.stdout.write('✓\n');
   }
 };
 

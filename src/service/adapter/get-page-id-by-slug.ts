@@ -1,14 +1,13 @@
-import { ICmsContext, IGetPageIdBySlugAdapter } from '@thebigrick/catalyst-cms-layer/types';
+import { IGetPageIdBySlugAdapter } from '@thebigrick/catalyst-cms-layer/types';
 
 import getClient from '../get-client';
-import getFullLocale from '../get-full-locale';
 
 /**
  * Get the page ID by its slug
  * @param slug
  * @param context
  */
-const getPageIdBySlug: IGetPageIdBySlugAdapter = async (slug: string, context: ICmsContext) => {
+const getPageIdBySlug: IGetPageIdBySlugAdapter = async (slug, context) => {
   if (!slug) {
     return null;
   }
