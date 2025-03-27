@@ -1,6 +1,6 @@
 import { IGetPageIdBySlugAdapter } from '@thebigrick/catalyst-cms-layer/types';
 
-import getClient from '../get-client';
+import getGraphQLClient from '../get-graphql-client';
 
 /**
  * Get the page ID by its slug
@@ -12,19 +12,43 @@ const getPageIdBySlug: IGetPageIdBySlugAdapter = async (slug, context) => {
     return null;
   }
 
-  const client = getClient(context);
+  const client = getGraphQLClient(context);
 
-  const entries = await client.getEntries({
-    content_type: 'catalyst-page',
-    'fields.slug': slug,
-    limit: 1,
-  });
+  const query = `
+    query GetPageIdBySlug($slug: String!, $preview: Boolean) {
+      catalystPageCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
+        items {
+          sys {
+            id
+          }
+        }
+      }
+    }
+  `;
 
-  if (entries.items.length > 0) {
-    return entries.items[0].sys.id;
+  interface Response {
+    catalystPageCollection: {
+      items: Array<{
+        sys: {
+          id: string;
+        };
+      }>;
+    };
   }
 
-  return null;
+  try {
+    const data = await client.query<Response>(query, { slug, preview: context.isPreview });
+
+    if (data.catalystPageCollection.items.length > 0) {
+      return data.catalystPageCollection.items[0].sys.id;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error fetching page by slug:', error);
+
+    return null;
+  }
 };
 
 export default getPageIdBySlug;
