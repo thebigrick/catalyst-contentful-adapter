@@ -16,7 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "@bigcommerce/catalyst-core": "workspace:*",
-    "@bigcommerce/catalyst-client": "workspace:*",
     "@contentful/rich-text-react-renderer": "^16.0.1",
     "@thebigrick/catalyst-cms-layer": "workspace:*",
     "@thebigrick/catalyst-pluginizr": "workspace:*",

@@ -3,10 +3,8 @@ import contentful from 'contentful-management';
 import assertEnv from './assert-env';
 import getEnvironment from './get-environment';
 import getFullLocale from './get-full-locale';
-import { client } from "@bigcommerce/catalyst-client/client";
-import { graphql } from "@bigcommerce/catalyst-core/client/graphql";
 
-const LocaleQuery = graphql(`
+const LocaleQuery = `
   query LocaleQuery {
     site {
       settings {
@@ -17,7 +15,7 @@ const LocaleQuery = graphql(`
       }
     }
   }
-`);
+`;
 
 const migrateLocales = async () => {
   assertEnv();
@@ -37,7 +35,17 @@ const migrateLocales = async () => {
     }
   };
 
-  const { data } = await client.fetch({ document: LocaleQuery });
+  const graphQlEndpoint = `https://store-${process.env.BIGCOMMERCE_STORE_HASH}-${process.env.BIGCOMMERCE_CHANNEL_ID}.mybigcommerce.com/graphql`;
+  const res = await fetch(graphQlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_TOKEN}`,
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({ query: LocaleQuery })
+  });
+  const { data } = await res.json();
 
   const locales = data.site.settings?.locales as Array<{
     code: string;
