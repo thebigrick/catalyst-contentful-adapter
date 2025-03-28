@@ -1,9 +1,23 @@
-import rawBuildConfig from '@bigcommerce/catalyst-core/build-config/build-config.json';
 import contentful from 'contentful-management';
 
 import assertEnv from './assert-env';
 import getEnvironment from './get-environment';
 import getFullLocale from './get-full-locale';
+import { client } from "@bigcommerce/catalyst-client/client";
+import { graphql } from "@bigcommerce/catalyst-core/client/graphql";
+
+const LocaleQuery = graphql(`
+  query LocaleQuery {
+    site {
+      settings {
+        locales {
+          code
+          isDefault
+        }
+      }
+    }
+  }
+`);
 
 const migrateLocales = async () => {
   assertEnv();
@@ -23,7 +37,9 @@ const migrateLocales = async () => {
     }
   };
 
-  const locales = rawBuildConfig.locales as Array<{
+  const { data } = await client.fetch({ document: LocaleQuery });
+
+  const locales = data.site.settings?.locales as Array<{
     code: string;
     isDefault: boolean;
   }>;
